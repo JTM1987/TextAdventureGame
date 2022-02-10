@@ -1,6 +1,3 @@
-# Jesse Martin
-# IT-140
-# Module 7 Project Two
 """ Simple text based game which allows a player to move between rooms and collect 6
 items in order to defeat a "Boss". Player must navigate all six rooms in the enemy
 base and gather the six items in their corresponding rooms before encountering
@@ -75,26 +72,26 @@ def main():
                 print('The enemy captain quickly raises his gun and shoots you!')
                 print('You\'ve been defeated! Thank you for playing.')
                 break
+        # Updates the players status and prompts the player for their next move
         print('You are in the {}'.format(location))
-        print('You currently have:', inventory)
-        # Updates player with current location and items in inventory
-        if location not in 'Captain\'s Quarters' and 'Item' in rooms[location].keys():
+        print('You currently have', inventory)
+        # Prompts the player with the item contained in each room, if that room contains an item.
+        if location != 'Captain\'s Quarters' and 'Item' in rooms[location].keys():
             print('You look around, and see {}'.format(rooms[location]['Item']))
         print('_' * 64)
-        command = input('What do you want to do?').title().split()
-        # Handling player input (to move to a new room)
-        if command[1] in rooms[location].keys():
+        command = input('What do you want to do next: ').title().split()
+        # If player enters a command to move to the next room
+        if len(command) >= 2 and command[1] in rooms[location].keys():
             location = player_move(location, command[1], rooms)
             continue
-        elif command[1] not in directions and command[0] in 'Get' and ''.join(command[1:]) in rooms[location]['Item']:
-            print('You retrieve the {}!'.format(rooms[location]['Item']))
-            print('_' * 64)
-            retrieve_item(location, command, rooms, inventory)
-            continue
-        # Handling invalid commands entered by the player.
-        else:
-            print('Not a valid movement or command!')
-            continue
+        # If player enters command to get an item, error handling exception for no item\already retrieved
+        try:
+            if len(command[0]) == 3 and command[0] == 'Get' and ' '.join(command[1:]) in rooms[location]['Item']:
+                print('You pick up the {}'.format(rooms[location]['Item']))
+                print('_' * 64)
+                retrieve_item(location, command, rooms, inventory)
+        except KeyError:
+            print('Oops! Not a valid movement or command!')
 
 
 main()
